@@ -33,10 +33,6 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Create a temp artifacts downloads folder
       run:  mkdir .github/workflows/html
-    - name: Update JSON schema files (replace references to JSON w/JSON)
-      run:  | 
-        cd .github/workflows
-        python ./update.py
     - name: Run main.py (generate html files using jinja template)
       run: |
         cd .github/workflows
