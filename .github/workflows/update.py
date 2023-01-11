@@ -12,26 +12,11 @@ from jinja2 import Environment, FileSystemLoader
 
 
 def readFile(file):
-	f = open(file,"rt");
+	f = open("../../" + file,"rt");
 	data = f.read()
 	f.close()
 	return data
 
-#def removeBrackets(file):
-		# remove [ and ] from begining and end of files
-	        #print(file)
-		#f = open(file,"rt");
-		#data = f.read()
-		#f.close()
-		#data = data.replace('[','',1)
-		#pos = data.rfind(']')
-		#if pos > -1:
-		#	data = data[:pos] +  data[pos + len(']'): ]
-			#.close()		
-		#f = open(file,'wt')
-		#f.write(data);
-		#f.close()
-	
 
 def expandFiles(files):
 	notDone = 0
@@ -69,7 +54,7 @@ def expandFiles(files):
 
 if  __name__ == "__main__":
 	# Store the JSON file names
-	files = glob.glob('*avsc')
+	files = glob.glob('../../*avsc')
 	
 	print (files)
 	for x in range (0,9):

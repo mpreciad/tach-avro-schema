@@ -1,12 +1,15 @@
 {% extends "base.html.jinja" %}
 {% block content %}
+{# Template is used to generate tree structure withe caret arrows for gcn.* (JSON) schemas #}
 <div class ="container">
       <div class ="heading">
         <h1>{{ title }}</h1>   
       </div>
       <div class ="gallery">
       <ul id ="myUL">
-       {% for key, value in tachFile.items() recursive %}
+      {# Check if the JSON file only contains dictionaries before processing #}
+      {% if tachFile is mapping %}
+        {% for key, value in tachFile.items() recursive %}
          {% if value is string or value is number %}
            <li><span>{{ key }}:  <div class = value>{{ value }} </div> </span>
 	 {% else %} 
@@ -32,6 +35,37 @@
           </li>
          {% endif %}
      {% endfor %}
+    {% else %}
+    {# Now check if the JSON file is a list of dictionaries ...then proceed to process #}
+     {% for dict_item in tachFile %}
+        {% for key, value in dict_item.items() recursive %}
+         {% if value is string or value is number %}
+           <li><span>{{ key }}:  <div class = value>{{ value }} </div> </span>
+	 {% else %} 
+          {% set outer_loop = loop %}
+          <li><span class ='caret'>{{ key }}</span>
+           <ul class='nested'>
+             {% if value is mapping %}
+                 {{ loop(value.items()) }}
+             {% elif value is iterable %}
+                  {% for item in value %}
+                   <li>
+                    {% if item is mapping %}
+                       {{ outer_loop(item.items()) }}
+                    {% else %}
+                      <li>{{ item }}</li> 
+                    {% endif %}
+                  </li>
+                 {% endfor %}
+             {% else %}
+                <li> {{ value }}<li>
+             {% endif %}
+           </ul>
+          </li>
+         {% endif %}
+     {% endfor %}
+    {% endfor %}
+  {% endif %}
      </ul>
      </div>
 </div>
