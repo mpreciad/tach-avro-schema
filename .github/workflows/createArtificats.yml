@@ -44,6 +44,6 @@ jobs:
         ls -l html
     - name: Upload Artifact (generated html files)
       uses: actions/upload-artifact@v3
-       with:
+      with:
         name: output-treeview-htmls
         path: .github/workflows/html
