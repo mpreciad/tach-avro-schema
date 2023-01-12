@@ -1,0 +1,54 @@
+#This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: create Artifacts
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.10"
+    - name: Use Node.js
+      uses: actions/setup-node@v2
+      with:
+          node-version: '16'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest Jinja2
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Create a temp artifacts downloads folder
+      run:  mkdir .github/workflows/html
+    - name: Update JSON schema files (replace references to JSON w/JSON)
+      run:  | 
+        cd .github/workflows
+        python ./update.py
+    - name: Run main.py (generate html files using jinja template)
+      run: |
+        cd .github/workflows
+        python ./main.py
+        ls -l html
+    - name: Upload Artifact (generated html files)
+      uses: actions/upload-artifact@v2
+      with:
+        name: output-treeview-htmls
+        path: .github/workflows/html
+
