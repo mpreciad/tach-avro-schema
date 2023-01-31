@@ -1,5 +1,16 @@
 #!/usr/bin/env python
-#
+# 
+# Name:        update.py 
+# Author:      Michael Preciado
+# Description: This script reads in each schema file and:
+#	       1) Replaces all references to JSON files with the contents of the JSON files
+#              2) Repeats (1) until there are no more JSON refs in the file 
+#              
+#              Note: This script is meant to be run in a CI setup through GitHub and within
+#		     a docker container. It updates the schema files so that they can be later
+#		     tranformed into Tree View html by main.py. 
+# 
+# usage:       ./update.py
 #
 #
 import json

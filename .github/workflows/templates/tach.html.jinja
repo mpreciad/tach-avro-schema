@@ -8,8 +8,12 @@
       <div class ="gallery">
       <ul id ="myUL">
       {# Check if the JSON file only contains dictionaries before processing #}
-      {% if tachFile is mapping %}
-        {% for key, value in tachFile.items() recursive %}
+      {% set tachFileNew = tachFile %} 
+        {% if tachFile is mapping() %} 
+          {% set tachFileNew =  [tachFile]  %}
+        {% endif %}
+      {% for dict_item in tachFileNew %} 
+       {% for key, value in dict_item.items() recursive %}
          {% if value is string or value is number %}
            <li><span>{{ key }}:  <div class = value>{{ value }} </div> </span>
 	 {% else %} 
@@ -24,7 +28,7 @@
                     {% if item is mapping %}
                        {{ outer_loop(item.items()) }}
                     {% else %}
-                      <li>{{ item }}</li> 
+                     <li>{{ item }}</li> 
                     {% endif %}
                   </li>
                  {% endfor %}
@@ -34,38 +38,8 @@
            </ul>
           </li>
          {% endif %}
-     {% endfor %}
-    {% else %}
-    {# Now check if the JSON file is a list of dictionaries ...then proceed to process #}
-     {% for dict_item in tachFile %}
-        {% for key, value in dict_item.items() recursive %}
-         {% if value is string or value is number %}
-           <li><span>{{ key }}:  <div class = value>{{ value }} </div> </span>
-	 {% else %} 
-          {% set outer_loop = loop %}
-          <li><span class ='caret'>{{ key }}</span>
-           <ul class='nested'>
-             {% if value is mapping %}
-                 {{ loop(value.items()) }}
-             {% elif value is iterable %}
-                  {% for item in value %}
-                   <li>
-                    {% if item is mapping %}
-                       {{ outer_loop(item.items()) }}
-                    {% else %}
-                      <li>{{ item }}</li> 
-                    {% endif %}
-                  </li>
-                 {% endfor %}
-             {% else %}
-                <li> {{ value }}<li>
-             {% endif %}
-           </ul>
-          </li>
-         {% endif %}
-     {% endfor %}
-    {% endfor %}
-  {% endif %}
+        {% endfor %}
+      {% endfor %}
      </ul>
      </div>
 </div>
